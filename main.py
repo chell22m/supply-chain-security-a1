@@ -3,8 +3,31 @@ import argparse
 import requests
 import base64
 import json
+from urllib.parse import urljoin
 from util import extract_public_key, verify_artifact_signature
 from merkle_proof import DefaultHasher, verify_consistency, verify_inclusion, compute_leaf_hash
+
+
+REKOR_BASE_URL = 'https://rekor.sigstore.dev'
+
+
+def _rekor_get_request(endpoint, params=None):
+    """
+    Helper function to generate GET request to Rekor API.
+    """
+    # GET request to Rekor
+    rekor_url = urljoin(REKOR_BASE_URL, endpoint)
+    response = requests.get(
+        rekor_url, 
+        params=params,
+        timeout=5,  # five second timeout to avoid server hangs
+    )
+
+    # raise error if 4/5xx status code
+    response.raise_for_status()
+
+    # return entire response for caller to extract fields
+    return response.json()
 
 
 def get_log_entry(log_index, debug=False):
@@ -21,15 +44,11 @@ def get_log_entry(log_index, debug=False):
         return
 
     # use rekor v1 API
-    rekor_url = 'https://rekor.sigstore.dev/api/v1/log/entries'
+    endpoint = '/api/v1/log/entries'
     params = {'logIndex': log_index}
-    response = requests.get(rekor_url, params=params)
-
-    # raise error if 4/5xx status code
-    response.raise_for_status()
+    entries = _rekor_get_request(endpoint, params=params)
 
     # get base64 encoded body
-    entries = response.json()
     if debug:
         print('Entries:')
         print(json.dumps(entries, indent=4))
@@ -124,14 +143,7 @@ def get_latest_checkpoint(debug=False):
     Fetch the latest checkpoint from rekor
     """
     # use rekor v1 API
-    rekor_url = 'https://rekor.sigstore.dev/api/v1/log'
-    response = requests.get(rekor_url)
-
-    # raise error if 4/5xx status code
-    response.raise_for_status()
-
-    # extract checkpoint data
-    checkpoint = response.json()
+    checkpoint = _rekor_get_request(endpoint='/api/v1/log')
 
     # if debug is enabled, store it in a file checkpoint.json
     if debug:
@@ -151,19 +163,15 @@ def get_consistency_proof(tree_id, first_tree_size, last_tree_size):
         print(f'Error: invalid tree sizes given: [{first_tree_size}, {last_tree_size}]')
 
     # use rektor v1 API
-    rekor_url = 'https://rekor.sigstore.dev/api/v1/log/proof'
+    endpoint = '/api/v1/log/proof'
     params = {
         'firstSize': first_tree_size,
         'lastSize': last_tree_size,
         'treeID': tree_id
     }
-    response = requests.get(rekor_url, params=params)
-
-    # raise error if 4/5xx status code
-    response.raise_for_status()
+    proof = _rekor_get_request(endpoint, params)
 
     # extract hashes from proof data
-    proof = response.json()
     hashes = proof['hashes']
 
     return hashes
