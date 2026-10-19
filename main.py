@@ -149,6 +149,7 @@ def get_consistency_proof(tree_id, first_tree_size, last_tree_size):
     # ensure sane values for tree sizes
     if first_tree_size < 1 or last_tree_size < first_tree_size:
         print(f'Error: invalid tree sizes given: [{first_tree_size}, {last_tree_size}]')
+        return
 
     # use rektor v1 API
     rekor_url = 'https://rekor.sigstore.dev/api/v1/log/proof'
@@ -202,6 +203,9 @@ def consistency(prev_checkpoint, debug=False):
 
     # get the consistency proof
     proof = get_consistency_proof(prev_checkpoint['treeID'], size1, size2)
+    if not proof:
+        print('Error: Could not retrieve consistency proof')
+        return
     if debug:
         print('Proof:')
         print(proof)
