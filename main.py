@@ -203,10 +203,10 @@ def consistency(prev_checkpoint, debug=False):
     root2 = latest_checkpoint['rootHash']  # this is the latest checkpoint root hash
 
     if debug:
-        print(f'{size1=}')
-        print(f'{size2=}')
-        print(f'{root1=}')
-        print(f'{root2=}')
+        print('Previous checkpoint:')
+        print(f'treeSize: {size1}\nrootHash: {root1}')
+        print('Latest checkpoint:')
+        print(f'treeSize: {size2}\nrootHash: {root2}')
         print('\n')
 
     # get the consistency proof
