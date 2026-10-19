@@ -53,7 +53,7 @@ def get_log_entry(log_index, debug=False):
         print('Entries:')
         print(json.dumps(entries, indent=4))
         print('\n')
-    for entry_id, entry_data in entries.items():
+    for _, entry_data in entries.items():
         return entry_data  # only a single entry
 
 
