@@ -1,0 +1,47 @@
+[project]
+name = "supply-chain-security-a1"
+version = "0.1.0"
+description = "sign release artifacts with cosign and verify with rekor."
+authors = [
+    {name = "chell22m",email = "chell22m@mtholyoke.edu"}
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "cryptography (==43.0.3)",
+    "keyring (==25.7.0)",
+    "requests (==2.34.2)",
+    "requests-toolbelt (==1.0.0)",
+    "urllib3 (==2.8.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "ruff (>=0.17.1,<0.18.0)",
+    "mypy (>=2.4.0,<3.0.0)",
+    "bandit (>=1.9.4,<2.0.0)"
+]
+types = [
+    "types-requests (>=2.33.0.20261006,<3.0.0.0)"
+]
+
+[tool.ruff]
+line-length = 88 
+
+[tool.ruff.format]
+indent-style = "space"
+
+[tool.mypy]
+warn_unreachable = true
+warn_return_any = true
+ignore_missing_imports = true
+
+[tool.bandit]
+exclude_dirs = ["venv"]
+
