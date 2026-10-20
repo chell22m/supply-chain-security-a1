@@ -1,17 +1,18 @@
-import os
 import argparse
-import requests
 import base64
 import json
+import os
 from urllib.parse import urljoin
-from util import extract_public_key, verify_artifact_signature
+
+import requests
+
 from merkle_proof import (
     DefaultHasher,
+    compute_leaf_hash,
     verify_consistency,
     verify_inclusion,
-    compute_leaf_hash,
 )
-
+from util import extract_public_key, verify_artifact_signature
 
 REKOR_BASE_URL = "https://rekor.sigstore.dev"
 
@@ -58,7 +59,7 @@ def get_log_entry(log_index, debug=False):
         print("Entries:")
         print(json.dumps(entries, indent=4))
         print("\n")
-    for _, entry_data in entries.items():
+    for entry_data in entries.values():
         return entry_data  # only a single entry
 
 
