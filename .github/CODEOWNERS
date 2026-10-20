@@ -1,0 +1,10 @@
+# Global Owners
+# By default, @chell22m reviews all changes across the entire repository.
+*                                           @chell22m
+
+# Security & Infrastructure Configurations
+# Any changes to dependency management, locks, or security parameters
+/pyproject.toml                             @chell22m
+/poetry.lock                                @chell22m
+/.github/workflows/                         @chell22m
+
