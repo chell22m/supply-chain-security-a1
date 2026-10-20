@@ -1,4 +1,4 @@
-# Contributing to Supply Chain Security Monitor
+# Contributing to Rekor Monitor
 
 Thank you for helping improve this tool! To ensure a smooth review process, please follow these guidelines when submitting changes.
 
