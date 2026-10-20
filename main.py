@@ -118,8 +118,8 @@ def inclusion(log_index, artifact_filepath, debug=False):
     """
     # verify artifact filepath exists
     if not os.path.isfile(artifact_filepath):
-        print("Error: Artifact filepath ({artifact_filepath}) does not exist!")
-        return
+        print(f"Error: Artifact filepath ({artifact_filepath}) does not exist!")
+        return False
 
     # get log entry from Rekor
     signature, certificate = get_certs_from_log_index(log_index, debug)
@@ -144,6 +144,7 @@ def inclusion(log_index, artifact_filepath, debug=False):
     )
 
     print("Inclusion verification successful.")
+    return True
 
 
 def get_latest_checkpoint(debug=False):
@@ -195,7 +196,7 @@ def consistency(prev_checkpoint, debug=False):
     for k in keys:
         if k not in prev_checkpoint:
             print(f"Error missing key of previous checkpoint: {k}")
-            return
+            return False
 
     # get latest checkpoint data
     latest_checkpoint = get_latest_checkpoint()
@@ -223,7 +224,7 @@ def consistency(prev_checkpoint, debug=False):
     proof = get_consistency_proof(prev_checkpoint["treeID"], size1, size2)
     if not proof:
         print("Error: Could not retrieve consistency proof")
-        return
+        return False
     if debug:
         print("Proof:")
         print(proof)
@@ -234,6 +235,7 @@ def consistency(prev_checkpoint, debug=False):
     verify_consistency(DefaultHasher, size1, size2, proof, root1, root2)
 
     print("Consistency verification successful.")
+    return True
 
 
 def main():
